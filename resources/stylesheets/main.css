@@ -1,8 +1,32 @@
 .title {
     font-family: Arial;
     font-size: 2em;
+    padding: 0;
+    margin: 0;
 }
 
-#main-website {
+div#main-website {
     background-color: deepskyblue;
+
+/*
+    -moz-box-shadow: 1em 1em 1em 1em #000000;
+    -webkit-box-shadow: 1em 1em 1em 1em #000000;
+*/
+    /*Horizontal / Vertical offsets, blur radius, spread*/
+    box-shadow: 0em 0em 1.5em 0.25em #000000;
+
+    /*Standardizing distance from sides of the website*/
+
+}
+
+body {
+    background-color: rgb(39, 99, 177);
+
+    padding: 0;
+    margin: 0;
+}
+
+html {
+    padding: 0;
+    margin: 0;
 }
