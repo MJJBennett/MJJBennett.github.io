@@ -4,8 +4,8 @@ for (var i = 0; i < stylesheets.length; i++) {
     var id = stylesheets[i] + 'CSSID';
 
     if (!document.getElementById(id)) {
-        var css_path = 'resources/stylesheets/' + stylesheets[i] + '.css';
-        console.log('Injecting stylesheet: ' + css_path);
+        var css_path = 'https://mjjbennett.github.io/resources/stylesheets/' + stylesheets[i] + '.css';
+        console.log('Injecting stylesheet: THIS IS NEW!!!' + css_path);
         var link = document.createElement('link');
         link.id = id;
         link.rel = 'stylesheet';
