@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress</title>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script> 
+    //Found this great solution for includes: https://stackoverflow.com/questions/8988855/include-another-html-file-in-a-html-file
+    $(function() {
+        console.log("Including header.");
+        $("#include-header").load("resources/html/site-header.html"); 
+    });
+    </script>
+
+    <!--Permanent solution (loads all scripts from GitHub)-->
+    <script src="src/js/load_styles.js"></script>
+    <!--Temporary solution (loads locally)-->
+    <link id="mainCSSID" rel="stylesheet" type="text/css" href="resources/stylesheets/main.css">
+    
+</head>
+<body>
+
+    Website is a work in progress!
+    
+    <ul>Current projects:
+        <li>- This website</li>
+    </ul>
+    
+</body>
+</html>
