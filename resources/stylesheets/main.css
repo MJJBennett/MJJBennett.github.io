@@ -1,3 +1,50 @@
+/** Color Palette
+ * Using this tool: https://coolors.co/browser/best/1 
+ * Direct link: https://coolors.co/b39c4d-f1faee-a8dadc-768948-1d3557
+ * Colors:
+ * Light - F1FAEE
+ * Off-light - A8DADC
+ * Color (green) - 768948
+ * Color (off-green) - B39C4D
+ * Dark - 1D3557
+ */
+
+/* Load header CSS first - #floating-header */
+
+#floating-header {
+    /*Top-right-bottom-left*/
+    margin: 0 0 5em 0;
+    padding-left: 10%;
+    padding-right: 10%;
+
+    background-color: #768948;
+
+    display: flex;
+    flex-direction: column;
+}
+
+#floating-header>.page-title {
+    font-size: 200%;
+
+    
+
+    padding: 0;
+    margin: 0;
+}
+
+#floating-header>.nav {
+    font-family: Arial, Helvetica, sans-serif;
+
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    list-style: none;
+
+    padding: 0;
+}
+
+/* Load main content CSS */
+
 .title {
     font-family: Arial;
     font-size: 2em;
@@ -6,7 +53,7 @@
 }
 
 div#main-website {
-    background-color: deepskyblue;
+    background-color: #A8DADC;
 
 /*
     -moz-box-shadow: 1em 1em 1em 1em #000000;
@@ -17,16 +64,28 @@ div#main-website {
 
     /*Standardizing distance from sides of the website*/
 
+    margin-left: 10%;
+    margin-right: 30%;
+    height: 50%;
+
+}
+
+.footer {
+    background-color: #1D3557;
 }
 
 body {
-    background-color: rgb(39, 99, 177);
+    background-color: #F1FAEE;
 
     padding: 0;
     margin: 0;
+
+    height: 100%;
 }
 
 html {
     padding: 0;
     margin: 0;
+
+    height: 100%;
 }
