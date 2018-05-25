@@ -9,13 +9,21 @@
  * Dark - 1D3557
  */
 
+/* Define variables */
+:root {
+    --left-padding:20%;
+    /*--left-padding:calc();*/
+    --right-padding:20%;
+    /*--right-padding:calc();*/
+}
+
 /* Load header CSS first - #floating-header */
 
 #floating-header {
     /*Top-right-bottom-left*/
     margin: 0 0 5em 0;
-    padding-left: 10%;
-    padding-right: 10%;
+    padding-left: var(--left-padding);
+    padding-right: var(--right-padding);
 
     background-color: #768948;
 
@@ -64,7 +72,7 @@ div#main-website {
 
     /*Standardizing distance from sides of the website*/
 
-    margin-left: 10%;
+    margin-left: var(--left-padding);
     margin-right: 30%;
     height: 50%;
 
