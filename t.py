@@ -54,43 +54,6 @@ def main():
             raise
         print("new path: " + dirpath[len(html_dir):] + ".")
 
-
-    # Create the text file.
-    print('\nGenerating text file: ')
-    new_file = open('data/{0}.txt'.format(character), 'w+')
-    new_file.close()
-
-    # Copy template to the new file.
-    print('> Copying template.txt to data/{0}.txt'.format(character))
-    copyfile('template.txt', 'data/{0}.txt'.format(character))
-
-    # Set the replacement strings.
-    character_name = character
-    character_description = char_desc.get_character_description(character_name)
-
-    # Format the new file with the replacement strings.
-    print('> Formatting data/{0}.txt'.format(character))
-    with open('data/{0}.txt'.format(character), 'r') as file:
-        data = file.read()
-
-    with open('data.json', 'r+') as file:
-        json_data = json.load(file)
-
-    # Replace the target string
-    data = data.replace('$NUM', str(json_data['lastDiscussion']))
-    data = data.replace('$CHAR', character_name)
-    data = data.replace('$UCHAR', character_name.replace(' ', '_'))
-    data = data.replace('$DESC', character_description[0])
-    data = data.replace('$LWS', json_data['lastPoll'])
-    data = data.replace('$TWS', json_data['thisPoll'])
-    data = data.replace('$RLS', relationship.get_character_relationship(character_name))
-    data = data.replace('$PRCTG', str(get_percentage()))
-    data = data.replace('$VER', GENERATOR_VERSION)
-
-    # Write the file out again
-    with open('data/{0}.txt'.format(character), 'w') as file:
-        file.write(data)
-    print('> Generated data/{0}.txt'.format(character))
 if __name__ == "__main__":
     out("Running HTML templater.")
     main()
