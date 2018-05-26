@@ -51,6 +51,19 @@
     padding: 0;
 }
 
+.triangle {
+    width: 0; 
+    height: 0; 
+    
+    position: fixed;
+    left: var(--left-padding);
+
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+
+    border-bottom: 50px solid #1D3557;    
+}
+
 /* Load main content CSS */
 
 .title {

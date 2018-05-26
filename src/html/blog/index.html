@@ -9,21 +9,16 @@
     <script> 
     //Found this great solution for includes: https://stackoverflow.com/questions/8988855/include-another-html-file-in-a-html-file
     $(function() {
-        console.log("Including header.");
-        $("#include-header").load("resources/html/site-header.html"); 
+        $("#include-header").load("../resources/html/site-header.html"); 
+        console.log("ran!");
     });
-    </script>
-
-    <!--Permanent solution (loads all scripts from GitHub)-->
-    <script src="src/js/load_styles.js"></script>
-    <!--Temporary solution (loads locally)-->
-    <link id="mainCSSID" rel="stylesheet" type="text/css" href="resources/stylesheets/main.css">
-
+    </script> 
 </head>
 
+<script src="../src/js/load_styles.js"></script>
 
 <body>
-<div id="include-header"></div>
+$HEADER
 
 <div id="main-website">
 
