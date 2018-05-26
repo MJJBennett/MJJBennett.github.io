@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script> 
+    //Found this great solution for includes: https://stackoverflow.com/questions/8988855/include-another-html-file-in-a-html-file
+    $(function() {
+        $("#include-header").load("../resources/html/site-header.html"); 
+        console.log("ran!");
+    });
+    </script> 
+</head>
+
+<script src="../src/js/load_styles.js"></script>
+
+<body>
+<header id="floating-header">
+    <span class="page-title">
+        Website Title
+    </span>
+
+    <ul class="nav">
+        <li>test</li>
+        <li>tes2t</li>
+        <li>test333</li>
+    </ul>
+    
+    <div class="triangle"></div>
+</header>
+
+<div id="main-website">
+
+    <h1 class="title">Website a <a href="progress.html">work</a> in progress!</h1>
+    <p>Thank you for your patience.</p>
+
+</div>
+
+<footer id="floating-footer">
+
+</footer>
+
+</body>
+</html>
