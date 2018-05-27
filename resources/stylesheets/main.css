@@ -11,10 +11,21 @@
 
 /* Define variables */
 :root {
-    --left-padding:20%;
+
+    /*** Padding / Website Alignment ***/
+    --left-padding: 20%;
     /*--left-padding:calc();*/
-    --right-padding:20%;
+    --right-padding: 20%;
     /*--right-padding:calc();*/
+
+    /*** Colours / Website Palette ***/
+    --text-color: #2B2D42;
+    --text-clicked-color: rgb(31, 32, 44);
+
+    --header-background-color: #EF233C;
+    --header-foreground-color: #D90429;
+    --website-background-color: #EDF2F4;
+    --website-foreground-color: #8D99AE;
 }
 
 /* Load header CSS first - #floating-header */
@@ -25,7 +36,7 @@
     padding-left: var(--left-padding);
     padding-right: var(--right-padding);
 
-    background-color: #768948;
+    background-color: var(--header-foreground-color);
 
     display: flex;
     flex-direction: column;
@@ -34,7 +45,7 @@
 #floating-header>.page-title {
     font-size: 200%;
 
-    
+    background-color: var(--header-background-color);
 
     padding: 0;
     margin: 0;
@@ -49,6 +60,15 @@
     list-style: none;
 
     padding: 0;
+}
+
+.nav>a {
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.nav>a:hover, .nav>a:visited {
+    color: var(--text-clicked-color);
 }
 
 .triangle {
@@ -74,7 +94,7 @@
 }
 
 div#main-website {
-    background-color: #A8DADC;
+    background-color: var(--website-foreground-color);
 
 /*
     -moz-box-shadow: 1em 1em 1em 1em #000000;
@@ -96,7 +116,7 @@ div#main-website {
 }
 
 body {
-    background-color: #F1FAEE;
+    background-color: var(--website-background-color);
 
     padding: 0;
     margin: 0;
