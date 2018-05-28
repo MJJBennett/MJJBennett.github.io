@@ -44,10 +44,12 @@ def main():
 
                 # To get this working ASAP, we'll just hardcode the variable substitution.
                 # Format is $VARIABLE: path_to_substitution_file
-                variables = {"$HEADER": "resources/html/site-header.html"}
+                with open("t.conf", 'r') as file:
+                    variables = json.load(file)
+                # variables = {"$HEADER": "resources/html/site-header.html"}
 
                 for v in variables:
-                    with open(variables[v], 'r') as replacement:
+                    with open(v["value"], 'r') as replacement:
                         d = replacement.read()
                     # print("Replacing " + v + " with:\n" + d + "\nin:\n" + file_data)
                     file_data = file_data.replace(v, d)
