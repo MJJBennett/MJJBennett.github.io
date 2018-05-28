@@ -19,7 +19,7 @@ def main():
         json_config = json.load(file)
 
     # Configure safemode
-    if json_config["safemode"] > 0:
+    if json_config["safe-mode"] > 0:
         safemode = True
     else:
         safemode = False
