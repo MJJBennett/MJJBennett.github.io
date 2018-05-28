@@ -13,10 +13,21 @@ out = print
 err = print
 
 def main():
+
+    # Load config
     with open("./t.conf", 'r') as file:
         json_config = json.load(file)
-    safemode = False
-    html_dir = './src/html/'
+
+    # Configure safemode
+    if json_config["safemode"] > 0:
+        safemode = True
+    else:
+        safemode = False
+
+    # Configure html source directory
+    html_dir = json_config["html-dir"]
+    
+    # Run templating system
     for (dirpath, dirnames, filenames) in walk(html_dir):
         print("\nValues:: dirpath: " + dirpath + ", dirnames: " + str(dirnames) + ", filenames: " + str(filenames))
         current_dir = "./" + dirpath[len(html_dir):] + "/"
