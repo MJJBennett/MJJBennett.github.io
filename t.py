@@ -20,8 +20,6 @@ def replace_with_args(main_str, var, replacement, args, number):
     # in main_str: "...$HEADER&POS=4" => find the 4, replace $POS in "...<div style="...$POS"" with 4
     search_re = r'(' + re.escape(var) + r")(&[A-Z]*=[A-Za-z0-9]*)" # assumes 1 and only 1 variable
     for _ in range(0, number):
-        print(search_re)
-        print(main_str)
         to_replace = re.search(search_re, main_str)
         var_str = to_replace.groups()[1]
         first_var_str = var_str.split('&')[1].split('=')
