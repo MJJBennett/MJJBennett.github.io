@@ -20,6 +20,8 @@ def replace_with_args(main_str, var, replacement, args, number):
     # in main_str: "...$HEADER&POS=4" => find the 4, replace $POS in "...<div style="...$POS"" with 4
     search_re = r'(' + re.escape(var) + r")(&[A-Z]*=[A-Za-z0-9]*)" # assumes 1 and only 1 variable
     for _ in range(0, number):
+        print(search_re)
+        print(main_str)
         to_replace = re.search(search_re, main_str)
         var_str = to_replace.groups()[1]
         first_var_str = var_str.split('&')[1].split('=')
@@ -39,9 +41,12 @@ def main():
     # Configure safemode
     if json_config["safe-mode"] > 0:
         safemode = True
-        if sys.argv[1] == "--git":
-            print("Error: Running from git hook while in safe mode. Exiting.")
-            return
+        try:
+            if sys.argv[1] == "--git":
+                print("Error: Running from git hook while in safe mode. Exiting.")
+                return
+        except IndexError:
+            pass
     else:
         safemode = False
 
@@ -101,7 +106,8 @@ def main():
                         # variables[variable][arg] tells us whether the argument is required or not
                         # potentially additional information in the future, but for now this will do
                         if verbose:
-                            print("Doing special replace-with-args.")
+                            print("Doing special replace-with-args for variable " + variable + " and args " + str(args))
+                            print("Details: \nfile_data=" + file_data + "\nvariable=" + variable + "\nd=" + d)
                         file_data = replace_with_args(file_data, variable, d, args, variables[variable]["replace"])
                     else:
                         file_data = file_data.replace(variable, d, variables[variable]["replace"])
