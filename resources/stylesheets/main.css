@@ -77,11 +77,12 @@
     
     position: fixed;
     left: var(--left-padding);
+    top: 3em;
 
-    border-left: 50px solid transparent;
-    border-right: 50px solid transparent;
+    border-left: 35px solid transparent;
+    border-right: 35px solid transparent;
 
-    border-bottom: 50px solid #1D3557;    
+    border-bottom: 25px solid #1D3557;    
 }
 
 /* Load main content CSS */
