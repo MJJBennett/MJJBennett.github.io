@@ -8,6 +8,7 @@ import re
 import json
 from os import listdir, makedirs, walk
 from os.path import isfile, join, isdir
+import sys
 
 out = print
 err = print
@@ -38,6 +39,9 @@ def main():
     # Configure safemode
     if json_config["safe-mode"] > 0:
         safemode = True
+        if sys.argv[1] == "--git":
+            print("Error: Running from git hook while in safe mode. Exiting.")
+            return
     else:
         safemode = False
 
