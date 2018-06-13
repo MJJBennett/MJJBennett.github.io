@@ -22,9 +22,9 @@
     --text-color: #2B2D42;
     --text-clicked-color: rgb(31, 32, 44);
 
-    --header-background-color: #D90429;
-    --header-foreground-color: #D90429;
-    /*--header-foreground-color: #EF233C;*/
+    --header-background-color: #EF233C;
+    --header-foreground-color: #EF233C;
+    /*--header-foreground-color: #D90429;*/
     --website-background-color: #EDF2F4;
     --website-foreground-color: #8D99AE;
 }
@@ -59,7 +59,8 @@ body {
 
 #floating-header {
     /*Top-right-bottom-left*/
-    margin: 0 0 5em 0;
+    margin: 0 0 2.5em 0;
+    height: 5em;
     padding-left: var(--left-padding);
     padding-right: var(--right-padding);
 
@@ -104,12 +105,12 @@ body {
     
     position: fixed;
     left: var(--left-padding);
-    top: 3em;
+    top: 4.5em;
 
-    border-left: 35px solid transparent;
-    border-right: 35px solid transparent;
+    border-left: 1.5em solid transparent;
+    border-right: 1.5em solid transparent;
 
-    border-bottom: 25px solid #1D3557;    
+    border-bottom: 0.5em solid #1D3557;    
 }
 
 /* Load main content CSS */

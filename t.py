@@ -9,6 +9,7 @@ import json
 from os import listdir, makedirs, walk
 from os.path import isfile, join, isdir
 import sys
+import argparse
 
 out = print
 err = print
@@ -30,7 +31,7 @@ def replace_with_args(main_str, var, replacement, args, number):
     # print(main_str)
     return main_str
 
-def main():
+def main(args):
 
     # Load config
     with open("./t.conf", 'r') as file:
@@ -39,20 +40,33 @@ def main():
     # Configure safemode
     if json_config["safe-mode"] > 0:
         safemode = True
-        try:
-            if sys.argv[1] == "--git":
-                print("Error: Running from git hook while in safe mode. Exiting.")
-                return
-        except IndexError:
-            pass
+        if args.git:
+            print("Error: Running from git hook while in safe mode. Exiting.")
+            return
     else:
         safemode = False
 
     # Configure debug (verbosity)
-    if json_config["debug"] > 0:
+    if json_config["debug"] > 0 or args.verbose:
         verbose = True
     else:
         verbose = False
+    
+    build = 0 # deploy
+
+    if args.local or args.deploy:
+        if args.local:
+            build = 1
+    else:
+        if json_config["default-build"] == "local":
+            build = 1
+
+    if verbose:
+        if build == 0:
+            print("Starting deploy build.")
+        else:
+            print("Starting local build.")
+
 
     # Configure html source directory
     html_dir = json_config["html-dir"]
@@ -120,11 +134,29 @@ def main():
             err("Found an exception while dealing with " + current_filename + ":")
             raise
 
+def parse_cli():
+    parser = argparse.ArgumentParser(description='Templates and formats html files.')
+    parser.add_argument('--local', dest='local', action='store_const',
+                        const=True, default=False,
+                        help='Generate files to access via localhost://')
+    parser.add_argument('--deploy', dest='deploy', action='store_const',
+                        const=True, default=False,
+                        help='Generate files that use the internet.')
+    parser.add_argument('--verbose', dest='verbose', action='store_const',
+                        const=True, default=False,
+                        help='Print additional debug messages.')
+    parser.add_argument('--git', dest='git', action='store_const',
+                        const=True, default=False,
+                        help='Run in git mode.')
+
+    parsed_args = parser.parse_args()
+    return parsed_args
+
 if __name__ == "__main__":
     version = "0.1"
     out("Running HTML templater version {0}".format(version))
     # Super simple testing setup
-    main()
+    main(parse_cli())
     # file = open("./src/html/blog/index.html", "r").read()
     # replace_with_args(file, "$HEADER", open("./resources/html/site-header.html", "r").read(), ["POS"], 1)
     print("\n")
