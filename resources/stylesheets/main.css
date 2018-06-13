@@ -22,11 +22,38 @@
     --text-color: #2B2D42;
     --text-clicked-color: rgb(31, 32, 44);
 
-    --header-background-color: #EF233C;
+    --header-background-color: #D90429;
     --header-foreground-color: #D90429;
+    /*--header-foreground-color: #EF233C;*/
     --website-background-color: #EDF2F4;
     --website-foreground-color: #8D99AE;
 }
+
+/**
+ * Order CSS based on outer-inner, top-bottom. 
+ */
+
+/* HTML CSS */
+
+html {
+    /* html-reset stuff. might need more, google 'html-reset' */
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+
+/* Body CSS */
+
+body {
+    /* more html-reset */
+    padding: 0;
+    margin: 0;
+    height: 100%;
+
+    /* edit :root to change */
+    background-color: var(--website-background-color);
+}
+
 
 /* Load header CSS first - #floating-header */
 
@@ -114,20 +141,4 @@ div#main-website {
 
 .footer {
     background-color: #1D3557;
-}
-
-body {
-    background-color: var(--website-background-color);
-
-    padding: 0;
-    margin: 0;
-
-    height: 100%;
-}
-
-html {
-    padding: 0;
-    margin: 0;
-
-    height: 100%;
 }
