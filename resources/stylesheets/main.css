@@ -175,7 +175,7 @@ body {
     margin: 0;
 }
 
-div.main-website {
+div.article {
     background-color: var(--website-foreground-color);
     color: var(--website-text-color, --text-color);
 
@@ -184,17 +184,17 @@ div.main-website {
     -webkit-box-shadow: 1em 1em 1em 1em #000000;
 */
     /*Horizontal / Vertical offsets, blur radius, spread*/
-    box-shadow: 0em 0em 1.5em 0.25em #000000;
+    box-shadow: 0em 0em 1em 0.15em #000000;
 
     /*Standardizing distance from sides of the website*/
 
     margin-left: var(--left-padding);
     margin-right: 30%;
-    height: 50%;
-
+    margin-bottom: 2.5em;
+    height: auto;
 }
 
-div.main-website .content {
+div.article .content {
     margin: 0;
     padding: 1em;
 }
