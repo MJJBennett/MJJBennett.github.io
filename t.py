@@ -53,13 +53,16 @@ def main(args):
         verbose = False
     
     build = 0 # deploy
+    value_loc = "value"
 
     if args.local or args.deploy:
         if args.local:
             build = 1
+            value_loc = "local-value"
     else:
         if json_config["default-build"] == "local":
             build = 1
+            value_loc = "local-value"
 
     if verbose:
         if build == 0:
@@ -107,10 +110,10 @@ def main(args):
                 for variable in variables:
                     # Find the variable's generic type
                     if variables[variable]["type"] == "file":
-                        with open(variables[variable]["value"], 'r') as replacement:
+                        with open(variables[variable][value_loc], 'r') as replacement:
                             d = replacement.read()
                     elif variables[variable]["type"] == "text":
-                        d = variables[variable]["value"]
+                        d = variables[variable][value_loc]
                    
                     # Find out if there is an additional piece of data we need from the file
                     if "args" in variables[variable]:
