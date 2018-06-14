@@ -19,14 +19,62 @@
     /*--right-padding:calc();*/
 
     /*** Colours / Website Palette ***/
+
+    /**
+     * Trying out different colour palettes
+     * Uncomment a selection to test it.
+     */
+
+    /**
+     * #1 - Decent background, header is a bit washed out on some monitors
     --text-color: #2B2D42;
     --text-clicked-color: rgb(31, 32, 44);
-
     --header-background-color: #EF233C;
     --header-foreground-color: #EF233C;
-    /*--header-foreground-color: #D90429;*/
     --website-background-color: #EDF2F4;
     --website-foreground-color: #8D99AE;
+    --footer-background-color: #1D3557;
+    --footer-foreground-color: #FFFFFF;
+     */
+    
+    /**
+     * #2 - Black and white scheme
+     --text-color: #000000;
+     --text-clicked-color: #000000;
+     --header-background-color: #FFFFFF;
+     --header-foreground-color: #FFFFFF;
+     --website-background-color: #000000;
+     --website-foreground-color: #FFFFFF;
+     --footer-background-color: #000000;
+     --footer-foreground-color: #FFFFFF;
+     */
+
+    /**
+     * #3 - Inverted #2
+     --text-color: #FFFFFF;
+     --text-clicked-color: #FFFFFF;
+     --header-background-color: #000000;
+     --header-foreground-color: #000000;
+     --website-background-color: #FFFFFF;
+     --website-foreground-color: #000000;
+     --footer-background-color: #000000;
+     --footer-foreground-color: #000000;
+     */
+
+    /**
+     * #4 - Grayscale with a bit of blue
+     * https://coolors.co/dcdcdd-c5c3c6-46494c-4c5c68-1985a1
+     * Left out #4C5C68, #46494C
+     */
+    --text-color: #020402;
+    --text-clicked-color: #020402;
+    --header-background-color: #1985A1;
+    --header-foreground-color: #1985A1;
+    --website-background-color: #C5C3C6;
+    --website-foreground-color: #DCDCDD;
+    --website-text-color: #333;
+    
+    /*--header-foreground-color: #D90429;*/
 }
 
 /**
@@ -84,11 +132,15 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     flex-direction: row;
     list-style: none;
 
     padding: 0;
+}
+
+#floating-header>.nav>li {
+    padding-right: 3em;
 }
 
 .nav a {
@@ -106,12 +158,12 @@ body {
     
     position: fixed;
     left: var(--left-padding);
-    top: 4.5em;
+    top: 4.6em;
 
-    border-left: 1.5em solid transparent;
-    border-right: 1.5em solid transparent;
+    border-left: 0.75em solid transparent;
+    border-right: 0.75em solid transparent;
 
-    border-bottom: 0.5em solid #1D3557;    
+    border-bottom: 0.4em solid var(--website-background-color);    
 }
 
 /* Load main content CSS */
@@ -123,8 +175,9 @@ body {
     margin: 0;
 }
 
-div#main-website {
+div.main-website {
     background-color: var(--website-foreground-color);
+    color: var(--website-text-color, --text-color);
 
 /*
     -moz-box-shadow: 1em 1em 1em 1em #000000;
@@ -141,6 +194,11 @@ div#main-website {
 
 }
 
+div.main-website .content {
+    margin: 0;
+    padding: 1em;
+}
+
 .footer {
-    background-color: #1D3557;
+    background-color: var(--footer-background-color);
 }
