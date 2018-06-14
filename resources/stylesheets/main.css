@@ -74,6 +74,7 @@ body {
     font-size: 200%;
 
     background-color: var(--header-background-color);
+    color: var(--text-color);
 
     padding: 0;
     margin: 0;
@@ -90,12 +91,12 @@ body {
     padding: 0;
 }
 
-.nav>a {
+.nav a {
     text-decoration: none;
     color: var(--text-color);
 }
 
-.nav>a:hover, .nav>a:visited {
+.nav a:hover, .nav a:visited {
     color: var(--text-clicked-color);
 }
 
