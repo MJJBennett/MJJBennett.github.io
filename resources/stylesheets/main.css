@@ -64,14 +64,14 @@
     /**
      * #4 - Grayscale with a bit of blue
      * https://coolors.co/dcdcdd-c5c3c6-46494c-4c5c68-1985a1
-     * Left out #4C5C68, #46494C
+     * Left out #4C5C68, #46494C #DCDCDD 
      */
     --text-color: #020402;
     --text-clicked-color: #020402;
     --header-background-color: #1985A1;
     --header-foreground-color: #1985A1;
     --website-background-color: #C5C3C6;
-    --website-foreground-color: #DCDCDD;
+    --website-foreground-color: #EDF2F4;
     --website-text-color: #333;
     
     /*--header-foreground-color: #D90429;*/
