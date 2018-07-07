@@ -194,6 +194,10 @@ div.article {
     height: auto;
 }
 
+div.article p {
+    font-size: 150%;
+}
+
 div.article .content {
     margin: 0;
     padding: 1em;
