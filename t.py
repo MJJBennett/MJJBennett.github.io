@@ -14,6 +14,19 @@ import argparse
 out = print
 err = print
 
+class FileObject:
+    def __init__(self, fileFrom = "", fileTo = ""):
+        self.args = {}
+        self.fileFrom = fileFrom
+        self.fileTo = fileTo
+        self.data = None
+    def read(self):
+        with open(self.fileFrom, "r") as file:
+            self.data = file.read()
+    def write(self):
+        with open(self.fileTo, "w") as file:
+            file.write(self.data)
+
 def replace_with_args(main_str, var, replacement, args, number):
     # Here we need to do the following:
     # - Read the main_str and find where it declares something that should look like: var&arg=value
@@ -30,6 +43,9 @@ def replace_with_args(main_str, var, replacement, args, number):
 
     # print(main_str)
     return main_str
+
+def recurse_replace_file():
+    pass
 
 def main(args):
 
