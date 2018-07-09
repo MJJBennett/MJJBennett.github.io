@@ -18,6 +18,8 @@
     --right-padding: 20%;
     /*--right-padding:calc();*/
 
+    --header-height: 5.5em;
+
     /*** Colours / Website Palette ***/
 
     /**
@@ -108,7 +110,7 @@ body {
 #floating-header {
     /*Top-right-bottom-left*/
     margin: 0 0 2.5em 0;
-    height: 5em;
+    height: var(--header-height);
     padding-left: var(--left-padding);
     padding-right: var(--right-padding);
 
@@ -116,10 +118,11 @@ body {
 
     display: flex;
     flex-direction: column;
+    align-content: space-between;
 }
 
 #floating-header>.page-title {
-    font-size: 200%;
+    font-size: 250%;
 
     background-color: var(--header-background-color);
     color: var(--text-color);
@@ -135,12 +138,16 @@ body {
     justify-content: flex-start;
     flex-direction: row;
     list-style: none;
+    margin: 0;
+    height: 2.1em;
+    align-items: flex-end;
 
     padding: 0;
 }
 
 #floating-header>.nav>li {
     padding-right: 3em;
+    font-size: 110%;
 }
 
 .nav a {
@@ -158,7 +165,7 @@ body {
     
     position: fixed;
     left: var(--left-padding);
-    top: 4.6em;
+    top: calc(var(--header-height) - 0.38em);
 
     border-left: 0.75em solid transparent;
     border-right: 0.75em solid transparent;
