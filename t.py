@@ -44,7 +44,7 @@ def replace_with_args(main_str, var, replacement, args, number):
     # print(main_str)
     return main_str
 
-def recurse_replace_file():
+def recurse_replace_file(config = {}):
     pass
 
 def main(args):

@@ -19,6 +19,7 @@
     /*--right-padding:calc();*/
 
     --header-height: 5.5em;
+    --footer-height: 4em;
 
     /*** Colours / Website Palette ***/
 
@@ -75,6 +76,8 @@
     --website-background-color: #C5C3C6;
     --website-foreground-color: #EDF2F4;
     --website-text-color: #333;
+    --footer-background-color: rgb(83, 80, 87);
+    --footer-foreground-color: #000000;
     
     /*--header-foreground-color: #D90429;*/
 }
@@ -85,7 +88,8 @@
 
 /* HTML CSS */
 
-html {
+html,
+body {
     /* html-reset stuff. might need more, google 'html-reset' */
     padding: 0;
     margin: 0;
@@ -95,11 +99,6 @@ html {
 /* Body CSS */
 
 body {
-    /* more html-reset */
-    padding: 0;
-    margin: 0;
-    height: 100%;
-
     /* edit :root to change */
     background-color: var(--website-background-color);
 }
@@ -202,7 +201,7 @@ div.article {
 }
 
 div.article p {
-    font-size: 150%;
+    font-size: 120%;
 }
 
 div.article .content {
@@ -210,6 +209,18 @@ div.article .content {
     padding: 1em;
 }
 
-.footer {
+#container {
+    min-height: calc(100vh - var(--footer-height));
+}
+
+footer {
+    height: var(--footer-height);
+    padding-left: var(--left-padding);
+    color: var(--website-foreground-color);
+    /*width: 100%;*/
     background-color: var(--footer-background-color);
+}
+
+footer .footer-content {
+    padding-top: 5px;
 }
