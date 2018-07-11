@@ -117,7 +117,7 @@ body {
 
     display: flex;
     flex-direction: column;
-    align-content: space-between;
+    justify-content: space-between;
 }
 
 #floating-header>.page-title {
@@ -139,6 +139,7 @@ body {
     list-style: none;
     margin: 0;
     height: 2.1em;
+    margin-bottom: 0.5em;
     align-items: flex-end;
 
     padding: 0;
@@ -163,7 +164,6 @@ body {
     height: 0; 
     
     position: fixed;
-    left: var(--left-padding);
     top: calc(var(--header-height) - 0.38em);
 
     border-left: 0.75em solid transparent;
@@ -195,7 +195,7 @@ div.article {
     /*Standardizing distance from sides of the website*/
 
     margin-left: var(--left-padding);
-    margin-right: 30%;
+    margin-right: var(--right-padding);
     margin-bottom: 2.5em;
     height: auto;
 }
@@ -223,4 +223,31 @@ footer {
 
 footer .footer-content {
     padding-top: 5px;
+}
+
+/* Mobile */
+
+@media only screen and (max-width: 800px) {
+    :root {
+        --left-padding: 10%;
+        --right-padding: 10%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    :root {
+        --left-padding: 0%;
+        --right-padding: 0%;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    :root {
+        --left-padding: 0%;
+        --right-padding: 0%;
+    }
+
+    #floating-header>.page-title {
+        font-size: 150%;
+    }
 }
