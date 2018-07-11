@@ -211,6 +211,7 @@ div.article .content {
 
 #container {
     min-height: calc(100vh - var(--footer-height));
+    overflow: hidden;
 }
 
 footer {
@@ -219,6 +220,7 @@ footer {
     color: var(--website-foreground-color);
     /*width: 100%;*/
     background-color: var(--footer-background-color);
+    position: relative;
 }
 
 footer .footer-content {
