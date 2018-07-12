@@ -10,9 +10,14 @@ from os import listdir, makedirs, walk
 from os.path import isfile, join, isdir
 import sys
 import argparse
+import datetime
 
 out = print
 err = print
+
+def get_date():
+    now = datetime.datetime.now()
+    return now.strftime("%Y-%m-%d")
 
 class FileObject:
     def __init__(self, fileFrom = "", fileTo = ""):
@@ -127,6 +132,8 @@ def main(args):
                             d = replacement.read()
                     elif variables[variable]["type"] == "text":
                         d = variables[variable][value_loc]
+                    elif variables[variable]["type"] == "function":
+                        d = globals()[variables[variable][value_loc]]()
                    
                     # Find out if there is an additional piece of data we need from the file
                     if "args" in variables[variable]:
