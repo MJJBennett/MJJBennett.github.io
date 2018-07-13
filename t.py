@@ -17,7 +17,7 @@ err = print
 
 def get_date():
     now = datetime.datetime.now()
-    return now.strftime("%Y-%m-%d")
+    return now.strftime("%Y-%m-%d %H:%MPST")
 
 class FileObject:
     def __init__(self, fileFrom = "", fileTo = ""):
