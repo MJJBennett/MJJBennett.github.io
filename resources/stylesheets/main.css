@@ -217,14 +217,19 @@ div.article .content {
 footer {
     height: var(--footer-height);
     padding-left: var(--left-padding);
-    color: var(--website-foreground-color);
     /*width: 100%;*/
     background-color: var(--footer-background-color);
     position: relative;
+    overflow: hidden;
 }
 
 footer .footer-content {
+    color: var(--website-foreground-color);
     padding-top: 5px;
+}
+
+footer .footer-content p {
+    margin: 0;
 }
 
 /* Mobile */
