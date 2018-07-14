@@ -21,6 +21,14 @@
     --header-height: 5.5em;
     --footer-height: 4em;
 
+    /*** Choose one of the following to show or hide announcements ***/
+    /* Show: */
+    /* --announcement-box-height: 2em;
+    --display-announcements: block; */
+    /* Hide: */
+    --announcement-box-height: 0em;
+    --display-announcements: none;
+
     /*** Colours / Website Palette ***/
 
     /**
@@ -108,7 +116,7 @@ body {
 
 #floating-header {
     /*Top-right-bottom-left*/
-    margin: 0 0 2.5em 0;
+    margin: 0 0 calc(var(--announcement-box-height) + 2em) 0;
     height: var(--header-height);
     padding-left: var(--left-padding);
     padding-right: var(--right-padding);
@@ -170,6 +178,20 @@ body {
     border-right: 0.75em solid transparent;
 
     border-bottom: 0.4em solid var(--website-background-color);    
+}
+
+#announcement-box {
+    position: absolute;
+    top: calc(var(--header-height) + 0.75em);
+    left: var(--left-padding);
+    right: var(--right-padding);
+    height: calc(var(--announcement-box-height) - 5px);
+    display: var(--display-announcements);
+    padding-left: 1em;
+    padding-top: 5px;
+    overflow: hidden;
+    background-color: var(--website-foreground-color);
+    box-shadow: 0em 0em 0.5em 0.15em #000000;
 }
 
 /* Load main content CSS */
