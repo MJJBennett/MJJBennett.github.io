@@ -9,9 +9,11 @@ Mechanism: Collect file objects, scrape for information, generate results, write
 import os
 
 CONF = {
+    # All paths are relative to this directory
     'Directory': './',
     'Verbose': 'True',
-    'Exclude Directories': ['.git', '.exclude']
+    'Exclude Directories': ['.git', '.exclude'],
+    'Source Directories': ['website-src']
 }
 
 class Configuration:
@@ -19,6 +21,7 @@ class Configuration:
         self.directory = self.default(config_dict, 'Directory', './')
         self.do_write = self.default(config_dict, 'Verbose', 'False').lower() == 'true'
         self.exclude_dirs = self.default(config_dict, 'Exclude Directories', ['.git', '.exclude'])
+        self.source_dirs = self.default(config_dict, 'Source Directories', ['./'])
 
     def default(self, d, k, default):
         return default if k not in d else d[k]
@@ -29,6 +32,12 @@ class Configuration:
     def write(self, *args, **kwargs):
         if self.do_write:
             print(*args, **kwargs)
+
+    def join(self, *args):
+        fa = (*args)[0]
+        if fa.startswith(self.directory):
+            return os.path.join(*args)
+        return os.path.join(self.directory, *args)
 
 class FileObject:
     """
@@ -59,12 +68,15 @@ class Collector:
         self.files = []
 
     def collect_files(self):
-        self.config.write('Collecting files from directory:', self.config.directory)
-        directory = self.config.directory
+        directories = [ config.join(d) for d in self.config.source_dirs ]
+        self.config.write('Collecting files from directories:', directories)
+        for d in directories:
+            self._collect_files(d)
 
+    def _collect_files(self, directory):
         for (dirpath, dirs, files) in os.walk(directory, topdown=True):
-            dirs[:] = [d for d in dirs if not self.config.is_exclude_dir(d)]
-            self.config.write(files)
+            dirs[:] = [ d for d in dirs if not self.config.is_exclude_dir(d) ]
+            self.files.extend([ self.config.join(dirpath, f) for f in files ])
 
     def get_files(self):
         return self.files
@@ -82,6 +94,8 @@ if __name__ == "__main__":
     # Create a collector; find all files that need to be generated
     collector = Collector(config)
     collector.collect_files()
+
+    config.write(collector.get_files())
 
     # Create the fileobjects to wrap the filenames for the template files
     file_objects = []
