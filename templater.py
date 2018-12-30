@@ -10,16 +10,21 @@ import os
 
 CONF = {
     'Directory': './',
-    'Verbose': 'True'
+    'Verbose': 'True',
+    'Exclude Directories': ['.git', '.exclude']
 }
 
 class Configuration:
     def __init__(self, config_dict):
         self.directory = self.default(config_dict, 'Directory', './')
         self.do_write = self.default(config_dict, 'Verbose', 'False').lower() == 'true'
+        self.exclude_dirs = self.default(config_dict, 'Exclude Directories', ['.git', '.exclude'])
 
     def default(self, d, k, default):
         return default if k not in d else d[k]
+
+    def is_exclude_dir(self, directory):
+        return directory in self.exclude_dirs
 
     def write(self, *args, **kwargs):
         if self.do_write:
@@ -57,13 +62,14 @@ class Collector:
         self.config.write('Collecting files from directory:', self.config.directory)
         directory = self.config.directory
 
-        for (filenames, _, _) in os.walk(directory):
-            print(filenames)
+        for (dirpath, dirs, files) in os.walk(directory, topdown=True):
+            dirs[:] = [d for d in dirs if not self.config.is_exclude_dir(d)]
+            self.config.write(files)
 
-    def files(self):
+    def get_files(self):
         return self.files
 
-    def variables(self):
+    def get_variables(self):
         return self.variables
         
 
@@ -79,10 +85,10 @@ if __name__ == "__main__":
 
     # Create the fileobjects to wrap the filenames for the template files
     file_objects = []
-    for filename in collector.files():
+    for filename in collector.get_files():
         file_objects.append(FileObject(filename, config.new_filename(filename)))
     # We might have encountered a variables file
-    variables = collector.variables()
+    variables = collector.get_variables()
 
     # We now have the files, generate the output
     # for file_object in file_objects:
