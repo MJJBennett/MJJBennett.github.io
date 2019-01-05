@@ -98,12 +98,6 @@ class Configuration:
         # This looks ridiculous but is just me thinking about localization
         return error_messages['err-msg-not-found'] + ': ' + key
 
-    def join(self, *args):
-        for fa in args:
-            if fa.startswith(self.directory):
-                return os.path.join(*args)
-            return os.path.join(self.directory, *args)
-
 class FileObject:
     """
     Class for abstracting away file object logic.
@@ -420,3 +414,4 @@ if __name__ == "__main__":
     for fo in file_objects:
        simple_parsed_files.append(FileMetadata(fo, config)) 
 
+    print('Dumping simple parsed files into simple-parse/')
