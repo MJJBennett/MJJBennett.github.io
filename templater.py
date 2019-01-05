@@ -335,6 +335,13 @@ class FileMetadata(FileObject):
         # Metadata should be removed after.
         pass
 
+    def write_out(self, folder=None):
+        if folder is None:
+            folder = self.config.directory
+        if self.loaded:
+            with open(os.path.join(folder, self.outfile), 'w') as file:
+                file.write()
+
 class Collector:
     """
     This class is used to collect all the filenames to template.
@@ -415,3 +422,6 @@ if __name__ == "__main__":
        simple_parsed_files.append(FileMetadata(fo, config)) 
 
     print('Dumping simple parsed files into simple-parse/')
+
+    for spf in simple_parsed_files:
+        spf.write_out('simple-parse/')
