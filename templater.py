@@ -6,6 +6,21 @@ New script for templating files.
 Mechanism: Collect file objects, scrape for information, generate results, write out new files.
 """
 
+# In order to keep this a single file, some helper functions 
+# will be placed here (although they probably belong in other
+# files instead, but I don't want to have to ever worry about
+# import issues, ever) 42j
+
+def lstrstrip(string_to_strip, strip_with):
+    # https://stackoverflow.com/questions/3663450/
+    # I was fairly surprised to find that there wasn't 
+    # a standard way of doing this. Oh well.
+    if string_to_strip.endswith(strip_with):
+        return string_to_strip[:-len(strip_width)]
+    return string_to_strip
+
+# End helper functions
+
 import os
 
 CONF = {
@@ -13,15 +28,42 @@ CONF = {
     'Directory': './',
     'Verbose': 'True',
     'Exclude Directories': ['.git', '.exclude'],
-    'Source Directories': ['website-src']
+    'Source Directory': 'website-src',
+    'Remove Extensions': ['.template']
 }
 
 class Configuration:
     def __init__(self, config_dict):
-        self.directory = self.default(config_dict, 'Directory', './')
+        # Working directory
+        self.directory = os.path.abspath(self.default(config_dict, 'Directory', './'))
+        # Whether or not write() should print anything
         self.do_write = self.default(config_dict, 'Verbose', 'False').lower() == 'true'
+        # Directories that should be ignored while processing
         self.exclude_dirs = self.default(config_dict, 'Exclude Directories', ['.git', '.exclude'])
-        self.source_dirs = self.default(config_dict, 'Source Directories', ['./'])
+        # Directories where we can find our source files - these will be translated to be placed in the working directory        
+        self.source_dir = os.path.abspath(self.default(config_dict, 'Source Directory', './source'))
+        # Extensions that should be removed from the filenames
+        self.remove_exts = self.default(config_dict, 'Remove Extensions', ['.remove', '.template'])
+
+    def new_filename(self, filename):
+        """
+        This function takes a filename and returns it with the 
+        extension removed. e.g. blog/index.html.template 
+        should be placed into working_directory/blog/index.html
+        """
+
+        for remove_ext in self.remove_exts:
+            filename = lstrstrip(filename, remove_ext)
+
+        return os.path.abspath(filename)
+
+    def source_filename(self, filename):
+        """
+        This function takes a filename and returns it with the
+        source directory appended.
+        """
+
+        return os.path.abspath(os.path.join(self.source_dir, filename))
 
     def default(self, d, k, default):
         return default if k not in d else d[k]
@@ -34,10 +76,10 @@ class Configuration:
             print(*args, **kwargs)
 
     def join(self, *args):
-        fa = (*args)[0]
-        if fa.startswith(self.directory):
-            return os.path.join(*args)
-        return os.path.join(self.directory, *args)
+        for fa in args:
+            if fa.startswith(self.directory):
+                return os.path.join(*args)
+            return os.path.join(self.directory, *args)
 
 class FileObject:
     """
@@ -57,6 +99,8 @@ class FileObject:
             Function(line)
     def foreach_replace(self, Function):
         self.filedata = [ Function(x) for x in self.filedata ]
+    def fmt_data(self):
+        return "{ FileObject : { infile: " + self.infile + " }, { outfile: " + self.outfile + " } }"
 
 class Collector:
     """
@@ -68,15 +112,15 @@ class Collector:
         self.files = []
 
     def collect_files(self):
-        directories = [ config.join(d) for d in self.config.source_dirs ]
-        self.config.write('Collecting files from directories:', directories)
-        for d in directories:
-            self._collect_files(d)
+        self.config.write('Collecting files from directory:', self.config.source_dir)
+        # for d in self.config.source_dirs:
+        self._collect_files(self.config.source_dir)
 
     def _collect_files(self, directory):
         for (dirpath, dirs, files) in os.walk(directory, topdown=True):
             dirs[:] = [ d for d in dirs if not self.config.is_exclude_dir(d) ]
-            self.files.extend([ self.config.join(dirpath, f) for f in files ])
+            current_dir = os.path.relpath(dirpath, directory)
+            self.files.extend([ os.path.join(current_dir, f)  for f in files ])
 
     def get_files(self):
         return self.files
@@ -100,9 +144,12 @@ if __name__ == "__main__":
     # Create the fileobjects to wrap the filenames for the template files
     file_objects = []
     for filename in collector.get_files():
-        file_objects.append(FileObject(filename, config.new_filename(filename)))
+        file_objects.append(FileObject(config.source_filename(filename), config.new_filename(filename)))
     # We might have encountered a variables file
     variables = collector.get_variables()
+
+    for fo in file_objects:
+        print(fo.fmt_data())
 
     # We now have the files, generate the output
     # for file_object in file_objects:
