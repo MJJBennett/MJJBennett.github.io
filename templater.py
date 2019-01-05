@@ -16,12 +16,12 @@ def lstrstrip(string_to_strip, strip_with):
     # I was fairly surprised to find that there wasn't 
     # a standard way of doing this. Oh well.
     if string_to_strip.endswith(strip_with):
-        return string_to_strip[:-len(strip_width)]
+        return string_to_strip[:-len(strip_with)]
     return string_to_strip
 
 # End helper functions
 
-import os
+import os, re
 
 CONF = {
     # All paths are relative to this directory
@@ -57,13 +57,21 @@ class Configuration:
 
         return os.path.abspath(filename)
 
-    def source_filename(self, filename):
+    def source_filepath(self, filename):
         """
         This function takes a filename and returns it with the
         source directory appended.
         """
 
         return os.path.abspath(os.path.join(self.source_dir, filename))
+
+    def source_filename(self, filename):
+        """
+        This function takes a filename and returns it with the
+        source directory appended.
+        """
+
+        return os.path.normpath(os.path.join(os.path.relpath(self.source_dir, self.directory), filename))
 
     def default(self, d, k, default):
         return default if k not in d else d[k]
@@ -78,6 +86,18 @@ class Configuration:
         if self.do_write:
             print(*args, **kwargs)
 
+    def error(self, *args, **kwargs):
+        print('ERROR:')
+        print(*args, **kwargs)
+
+    def err_msg(self, key):
+        error_messages = {'err-msg-not-found': 'Error message not found.',
+        'variable-files-not-supported': 'Variable files currently not supported.'}
+        if key in error_messages:
+            return error_messages[key]
+        # This looks ridiculous but is just me thinking about localization
+        return error_messages['err-msg-not-found'] + ': ' + key
+
     def join(self, *args):
         for fa in args:
             if fa.startswith(self.directory):
@@ -89,23 +109,13 @@ class FileObject:
     Class for abstracting away file object logic.
     """
 
-    def __init__(self, in_filename, out_filename):
-        # Load the file into memory
-        with open(in_filename, 'r') as file:
-            self.filedata = file.readlines()
+    def __init__(self, in_filename, out_filename, name):
         # Save io information
         self.infile = in_filename
         self.outfile = out_filename
-
-    def get_data(self):
-        return self.filedata
-
-    def foreach(self, Function):
-        for line in self.filedata:
-            Function(line)
-
-    def foreach_replace(self, Function):
-        self.filedata = [ Function(x) for x in self.filedata ]
+        self.name = name
+        self.loaded = False
+        self.data = None
 
     def fmt_data(self, sort_of_pretty = True):
         if sort_of_pretty:
@@ -114,6 +124,8 @@ class FileObject:
                 os.path.relpath(self.infile) + 
                 " }, \n\t{ outfile: " + 
                 os.path.relpath(self.outfile) + 
+                " }, \n\t{ name: " + 
+                os.path.relpath(self.name) + 
                 " } \n}"
                 )
         return (
@@ -124,9 +136,34 @@ class FileObject:
                 " } }" 
                 )
 
+    def get_filedata(self):
+        if not self.loaded:
+            with open(self.infile) as file:
+                data = file.read()
+            return data
+        return self.data
+
+    def load_filedata(self):
+        if not self.loaded:
+            with open(self.infile) as file:
+                self.data = file.read()
+            self.loaded = True
+
 class FileMetadata(FileObject):
-    def __init__(self, parent):
-        print('hello from a metadata file, parent', parent.outfile)
+    def __init__(self, parent, config):
+        super().__init__(parent.infile, parent.outfile, parent.name)
+        self.config = config
+
+        self.config.write("Processing file metadata for name:", self.name)
+        self.load_filedata()
+
+        self.parse()
+
+    def parse(self):
+        # This is just to get metadata about the file.
+        # Metadata should be removed after.
+        metadata_re = re.compile(r'\$\{ \
+                                   (([^\}]*?(\3)[^\}\'\"]*)*?)\}')
 
 class Collector:
     """
@@ -156,6 +193,9 @@ class Collector:
             else:
                 self.files.append(filename)
 
+    def _collect_variables(self, filename):
+        self.config.error(self.config.err_msg("variable-files-not-supported"))
+
     def get_files(self):
         return self.files
 
@@ -178,18 +218,18 @@ if __name__ == "__main__":
     # Create the fileobjects to wrap the filenames for the template files
     file_objects = []
     for filename in collector.get_files():
-        file_objects.append(FileObject(config.source_filename(filename), config.new_filename(filename)))
+        print(filename)
+        file_objects.append(FileObject(config.source_filepath(filename), config.new_filename(filename), config.source_filename(filename)))
     # We might have encountered a variables file
     variables = collector.get_variables()
 
     for fo in file_objects:
         config.write(fo.fmt_data())
 
-    # We now have the files, generate the output
-    # What this means is that we now are able to start the proper templating process
-
+    # This is a multi-pass parser
+    # Each pass we get more information about the files
     simple_parsed_files = []
     
     for fo in file_objects:
-       simple_parsed_files.append(FileMetadata(fo)) 
+       simple_parsed_files.append(FileMetadata(fo, config)) 
 
