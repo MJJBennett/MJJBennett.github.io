@@ -71,6 +71,9 @@ class Configuration:
     def is_exclude_dir(self, directory):
         return directory in self.exclude_dirs
 
+    def is_variable_file(self, filename):
+        return False
+
     def write(self, *args, **kwargs):
         if self.do_write:
             print(*args, **kwargs)
@@ -85,6 +88,7 @@ class FileObject:
     """
     Class for abstracting away file object logic.
     """
+
     def __init__(self, in_filename, out_filename):
         # Load the file into memory
         with open(in_filename, 'r') as file:
@@ -92,15 +96,33 @@ class FileObject:
         # Save io information
         self.infile = in_filename
         self.outfile = out_filename
+
     def get_data(self):
         return self.filedata
+
     def foreach(self, Function):
         for line in self.filedata:
             Function(line)
+
     def foreach_replace(self, Function):
         self.filedata = [ Function(x) for x in self.filedata ]
-    def fmt_data(self):
-        return "{ FileObject : { infile: " + self.infile + " }, { outfile: " + self.outfile + " } }"
+
+    def fmt_data(self, sort_of_pretty = True):
+        if sort_of_pretty:
+            return (
+                "{ FileObject : \n\t{ infile: " + 
+                os.path.relpath(self.infile) + 
+                " }, \n\t{ outfile: " + 
+                os.path.relpath(self.outfile) + 
+                " } \n}"
+                )
+        return (
+                "{ FileObject : { infile: " + 
+                self.infile + 
+                " }, { outfile: " + 
+                self.outfile + 
+                " } }" 
+                )
 
 class Collector:
     """
@@ -120,7 +142,15 @@ class Collector:
         for (dirpath, dirs, files) in os.walk(directory, topdown=True):
             dirs[:] = [ d for d in dirs if not self.config.is_exclude_dir(d) ]
             current_dir = os.path.relpath(dirpath, directory)
-            self.files.extend([ os.path.join(current_dir, f)  for f in files ])
+            self._collect([ os.path.join(current_dir, f)  for f in files ])
+
+    def _collect(self, files):
+        # Collect files into either self.files or self.variables
+        for filename in files:
+            if self.config.is_variable_file(filename):
+                self._collect_variables(filename)
+            else:
+                self.files.append(filename)
 
     def get_files(self):
         return self.files
