@@ -163,9 +163,12 @@ class FileMetadataFSM():
         self.STRING_CHARS = ['\'', '"']
         self.ESCAPE_CHAR = '\\'
 
-    def soft_reset(self):
+    def hard_reset(self):
         # I guess this is sort of a hard reset...
         self.lpos = -1
+        self.soft_reset()
+
+    def soft_reset(self):
         self.esc = False
         self.inside = False
         self.in_str = False
@@ -174,35 +177,44 @@ class FileMetadataFSM():
         self.found_str = ''
 
     def search_remove(self, c1, c2, cend, search_string, verbose = False):
-        for position in range(0, len(search_string) - 1):
+        self.soft_reset()
+
+        for position in range(0, len(search_string)):
             c = search_string[position]
             # If we encounter an escape char, we can invert our escape status
             if c == self.ESCAPE_CHAR:
                 self.esc = not self.esc
+                if verbose:
+                    print('Encountered escape character.')
                 continue
             # We want to assume we are inside for the rest of this function
             # Handle outside here
             if not self.inside:
                 # Early exit - we can ignore everything here
                 if self.esc:
-                    self.soft_reset()
+                    self.hard_reset()
                     continue
                 if self.found_c1:
                     # Found the first character, need second right now
-                    if c == c2:
+                    if c == c2:   
+                        if verbose:
+                            print('Encountered second character.')
                         self.inside = True
                         self.found_c1 = False # Reset this now
+                        self.lpos = position + 1
                         continue
                     # Did not find the second character
-                    self.soft_reset()
+                    self.hard_reset()
                     continue
+                if c == c1:
+                    if verbose:
+                        print('Encountered first character.')
+                    self.found_c1 = True
+
+                continue
 
             # We know we are inside. Therefore, we want the next character, UNLESS
             # the next character is the terminating character. So handle that first.
-
-            # Also, handle setting lpos here (where the string starts)
-            if len(self.found_str) == 0:
-                self.lpos = position - 1
 
             # If we encounter the end token, we're currently inside the search area
             # and we aren't escaped and we aren't in a string, we can end.
@@ -211,10 +223,12 @@ class FileMetadataFSM():
                 # That will be needed to do this again
 
                 # This is the full search string with the part we don't want removed
-                ret_str = search_string[:self.lpos] + search_string[position:]
+                ret_str = search_string[:self.lpos - 2] + search_string[position + 1:]
 
                 # This should be the full found string
                 # self.found_str
+                if verbose:
+                    print('Found string: "' + self.found_str + '"')
 
                 return ret_str
 
@@ -240,15 +254,13 @@ class FileMetadataFSM():
 
         # If we get here, something's gone wrong (or we just don't have a match)
         self.found_str = None
-        if verbose:
+        if verbose and self.inside:
             print('FSM ERROR(s):', '[Unterminated string]' if self.in_str else '',
-            '[Unterminated expression at position ' + str(self.lpos) + ' ]' if self.inside else '')
+            '[Unterminated expression at position ' + str(self.lpos) + ' ]')
         return None
 
     def get_result(self):
         return self.found_str
-                
-
 
 class FileMetadata(FileObject):
     def __init__(self, parent, config):
