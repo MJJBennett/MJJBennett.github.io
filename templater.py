@@ -92,7 +92,8 @@ class Configuration:
 
     def err_msg(self, key):
         error_messages = {'err-msg-not-found': 'Error message not found.',
-        'variable-files-not-supported': 'Variable files currently not supported.'}
+        'variable-files-not-supported': 'Variable files currently not supported.',
+        'what': 'No clue what just happened, honestly. Have a nice day!'}
         if key in error_messages:
             return error_messages[key]
         # This looks ridiculous but is just me thinking about localization
@@ -114,11 +115,11 @@ class FileObject:
     def fmt_data(self, sort_of_pretty = True):
         if sort_of_pretty:
             return (
-                "{ FileObject : \n\t{ infile: " + 
-                os.path.relpath(self.infile) + 
-                " }, \n\t{ outfile: " + 
-                os.path.relpath(self.outfile) + 
-                " }, \n\t{ name: " + 
+                "{ FileObject : \n\t{ rel(infile): " + 
+                self.get_rel_infile() + 
+                " }, \n\t{ rel(outfile): " + 
+                self.get_rel_outfile() + 
+                " }, \n\t{ rel(name): " + 
                 os.path.relpath(self.name) + 
                 " } \n}"
                 )
@@ -129,6 +130,18 @@ class FileObject:
                 self.outfile + 
                 " } }" 
                 )
+
+    def get_rel_infile(self):
+        return os.path.relpath(self.infile)
+
+    def get_abs_infile(self):
+        return self.infile
+
+    def get_rel_outfile(self):
+        return os.path.relpath(self.outfile)
+
+    def get_abs_outfile(self):
+        return self.outfile
 
     def get_filedata(self):
         if not self.loaded:
@@ -339,8 +352,31 @@ class FileMetadata(FileObject):
         if folder is None:
             folder = self.config.directory
         if self.loaded:
-            with open(os.path.join(folder, self.outfile), 'w') as file:
-                file.write()
+            midway_path = os.path.join(folder, self.get_rel_outfile())
+            if not os.path.exists(os.path.dirname(midway_path)):
+                try:
+                    os.makedirs(os.path.dirname(midway_path))
+                except:
+                    self.config.error(self.config.err_msg('what'))
+                    raise
+            self.config.write("Writing midway parse out to:", midway_path)
+            with open(midway_path, 'w') as file:
+                file.write(self.header())
+                file.write(self.fmt_data())
+                file.write("\n================================================\nFILE DATA:\n================================================\n")
+                file.write(self.data)
+
+    def fmt_data(self):
+        astring = (
+                "{ FileMetadata : \n\t{ infile: " + 
+                os.path.relpath(self.infile) + 
+                " } \n}\n"
+                )
+        astring += super().fmt_data()
+        return astring
+
+    def header(self):
+        return "================================================\nFILE METADATA:\n================================================\n"
 
 class Collector:
     """
