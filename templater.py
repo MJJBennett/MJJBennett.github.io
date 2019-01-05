@@ -21,7 +21,7 @@ def lstrstrip(string_to_strip, strip_with):
 
 # End helper functions
 
-import os, re
+import os, re, sys
 
 CONF = {
     # All paths are relative to this directory
@@ -151,7 +151,8 @@ class FileObject:
 
 class FileMetadataFSM():
     def __init__(self):
-        self.lpos = -1
+        self.lpos = 0
+        self.rpos = 0
         self.esc = False
         self.inside = False
         self.in_str = False
@@ -163,9 +164,12 @@ class FileMetadataFSM():
         self.STRING_CHARS = ['\'', '"']
         self.ESCAPE_CHAR = '\\'
 
+        self.HARD_VERBOSE = False
+
     def hard_reset(self):
         # I guess this is sort of a hard reset...
-        self.lpos = -1
+        self.lpos = 0
+        self.rpos = 0
         self.soft_reset()
 
     def soft_reset(self):
@@ -176,10 +180,24 @@ class FileMetadataFSM():
         self.str_type = ''
         self.found_str = ''
 
-    def search_remove(self, c1, c2, cend, search_string, verbose = False):
+    def search_shift(self, c1, c2, cend, search_string, verbose = False):
+        """
+        After the execution of this program
+                   A                 B   
+        string here ${another string}
+
+        A = self.lpos
+        B = self.rpos
+        self.lpos:self.rpos = ${another string}
+        self.found_str = another string
+        return value: ${another string}
+        """
+
         self.soft_reset()
 
-        for position in range(0, len(search_string)):
+        startpos = self.rpos
+
+        for position in range(startpos, len(search_string)):
             c = search_string[position]
             # If we encounter an escape char, we can invert our escape status
             if c == self.ESCAPE_CHAR:
@@ -197,17 +215,17 @@ class FileMetadataFSM():
                 if self.found_c1:
                     # Found the first character, need second right now
                     if c == c2:   
-                        if verbose:
+                        if self.HARD_VERBOSE:
                             print('Encountered second character.')
                         self.inside = True
                         self.found_c1 = False # Reset this now
-                        self.lpos = position + 1
+                        self.lpos = position - 1
                         continue
                     # Did not find the second character
                     self.hard_reset()
                     continue
                 if c == c1:
-                    if verbose:
+                    if self.HARD_VERBOSE:
                         print('Encountered first character.')
                     self.found_c1 = True
 
@@ -221,16 +239,10 @@ class FileMetadataFSM():
             if c == cend and not self.esc and not self.in_str:
                 # We need to make sure we have all the information ready
                 # That will be needed to do this again
-
-                # This is the full search string with the part we don't want removed
-                ret_str = search_string[:self.lpos - 2] + search_string[position + 1:]
-
-                # This should be the full found string
-                # self.found_str
-                if verbose:
-                    print('Found string: "' + self.found_str + '"')
-
-                return ret_str
+                
+                # self.rpos must be set here
+                self.rpos = position + 1
+                return search_string[self.lpos:self.rpos]
 
             # We know we are inside, and not ending here, take the next character.
             self.found_str += c
@@ -240,27 +252,79 @@ class FileMetadataFSM():
             if c in self.STRING_CHARS and not self.esc and (not self.in_str or str(c) == self.str_type):
                 if self.in_str:
                     # Because of the outer if statement, 
-                    # we know that we have found the last string character
+                    # we know that we have found the last string character'
+                    if (verbose):
+                        print('Leaving string.')
                     self.str_type = ''
                     self.in_str = False
                 else:
                     # Becauise of the outer if statement,
                     # we know that we have found the first string character
+                    if (verbose):
+                        print('Entering string.')
                     self.str_type = str(c)
                     self.in_str = True
                 continue
-                
-            
 
+            self.esc = False # We are never escaped now
+                
         # If we get here, something's gone wrong (or we just don't have a match)
         self.found_str = None
         if verbose and self.inside:
-            print('FSM ERROR(s):', '[Unterminated string]' if self.in_str else '',
-            '[Unterminated expression at position ' + str(self.lpos) + ' ]')
+            print('FSM ERROR(s):', '\n\tUnterminated string' if self.in_str else '',
+            '\n\tUnterminated expression at position ' + str(self.lpos + 2) + ' (No terminator found in "' + str(search_string[self.lpos+2:]) + '")')
+            print('\tIn string:\t', search_string)
         return None
 
-    def get_result(self):
-        return self.found_str
+    def search_remove(self, c1, c2, cend, search_string, verbose = False):
+        match = self.search_shift(c1, c2, cend, search_string, verbose)
+        # This is the full search string with the part we don't want removed
+        ret_str = search_string[:self.lpos] + search_string[self.rpos:]
+
+        # This should be the full found string
+        if verbose:
+            print('In string:', search_string)
+            if self.found_str:
+                print('\tFound string: "' + self.found_str + '"')
+            if match:
+                print('\tFound match: "' + match + '"')
+            if verbose:
+                print('\tThe new searched string should look like: "' + str(search_string[self.rpos:]) + '"')
+
+        return ret_str
+
+def Verbose_Assert_EQ(a, b, name=None):
+    if b != a:
+        print('Assert EQ failure' + ((' [Name: ' + str(name) + ']') if name is not None else '') + '. LHS (' + str(a) + ') != RHS (' + str(b) + ')')
+        return 1
+    return 0
+
+def FSM_UnitTest():
+    # Simple unit tests for FSM
+    fsm = FileMetadataFSM()
+    search_string = r"Hello darkness my old ${buddy}friend ${I\'ve come to talk}with you again!"
+    fails = 0
+    fails += Verbose_Assert_EQ(r"Hello darkness my old friend ${I\'ve come to talk}with you again!", 
+                                str(fsm.search_remove('$', '{', '}', search_string, True)), 
+                                'FSM Unit Test 1')
+    fails += Verbose_Assert_EQ(r"${I\'ve come to talk}", 
+                                str(fsm.search_shift('$', '{', '}', search_string, True)), 
+                                'FSM Unit Test 2')
+    fails += Verbose_Assert_EQ(None, 
+                                fsm.search_shift('$', '{', '}', search_string, True), 
+                                'FSM Unit Test 3')
+    fsm.hard_reset()
+    fails += Verbose_Assert_EQ(r"Hello darkness my old friend ${I\'ve come to talk}with you again!", 
+                                str(fsm.search_remove('$', '{', '}', search_string, True)), 
+                                'FSM Unit Test 1')
+    fails += Verbose_Assert_EQ(r"${I\'ve come to talk}", 
+                                str(fsm.search_shift('$', '{', '}', search_string, True)), 
+                                'FSM Unit Test 2')
+    fails += Verbose_Assert_EQ(None, 
+                                fsm.search_shift('$', '{', '}', search_string, True), 
+                                'FSM Unit Test 3')
+
+    return fails
 
 class FileMetadata(FileObject):
     def __init__(self, parent, config):
@@ -275,8 +339,7 @@ class FileMetadata(FileObject):
     def parse(self):
         # This is just to get metadata about the file.
         # Metadata should be removed after.
-        metadata_re = re.compile(r'\$\{ \
-                                   (([^\}]*?(\3)[^\}\'\"]*)*?)\}')
+        pass
 
 class Collector:
     """
@@ -317,6 +380,17 @@ class Collector:
         
 
 if __name__ == "__main__":
+    args = sys.argv[1:]
+    if '-ut' in args:
+        # Run unit test...s?
+        errc = 0
+        errc += FSM_UnitTest()
+        if errc > 0:
+            print('Failed', errc, 'unit tests!')
+        else:
+            print('Passed all unit tests!')
+        sys.exit(errc)
+
     # Running the templating engine
 
     # Create and parse the configuration
