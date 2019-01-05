@@ -124,6 +124,10 @@ class FileObject:
                 " } }" 
                 )
 
+class FileMetadata(FileObject):
+    def __init__(self, parent):
+        print('hello from a metadata file, parent', parent.outfile)
+
 class Collector:
     """
     This class is used to collect all the filenames to template.
@@ -179,7 +183,13 @@ if __name__ == "__main__":
     variables = collector.get_variables()
 
     for fo in file_objects:
-        print(fo.fmt_data())
+        config.write(fo.fmt_data())
 
     # We now have the files, generate the output
-    # for file_object in file_objects:
+    # What this means is that we now are able to start the proper templating process
+
+    simple_parsed_files = []
+    
+    for fo in file_objects:
+       simple_parsed_files.append(FileMetadata(fo)) 
+
