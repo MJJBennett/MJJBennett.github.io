@@ -45,6 +45,8 @@ class Configuration:
         # Extensions that should be removed from the filenames
         self.remove_exts = self.default(config_dict, 'Remove Extensions', ['.remove', '.template'])
 
+        self.write_shift = 0
+
     def new_filename(self, filename):
         """
         This function takes a filename and returns it with the 
@@ -82,9 +84,20 @@ class Configuration:
     def is_variable_file(self, filename):
         return False
 
-    def write(self, *args, **kwargs):
+    def write(self, *args):
         if self.do_write:
-            print(*args, **kwargs)
+            if self.write_shift <= 0:
+                print(*args)
+            else:
+                indent = '\t' * self.write_shift
+                print(' '.join([ (str(indent) + str(arg)) for arg in args ]))
+
+    def shift_write(self):
+        self.write_shift += 1
+
+    def unshift_write(self):
+        if self.write_shift >= 1:
+            self.write_shift -= 1
 
     def error(self, *args, **kwargs):
         print('ERROR:')
@@ -339,14 +352,32 @@ class FileMetadata(FileObject):
         self.config = config
 
         self.config.write("Processing file metadata for name:", self.name)
+        self.config.shift_write()
         self.load_filedata()
 
+        self.includes = []
+
         self.parse()
+        self.config.unshift_write()
+
+    def 
 
     def parse(self):
         # This is just to get metadata about the file.
         # Metadata should be removed after.
-        pass
+        self.load_filedata()
+
+        # Let's get the first function call.
+        fsm = FileMetadataFSM()
+
+        while True:
+            fsm.search_shift('$', '{', '}', self.data, self.config.do_write)
+            func = fsm.found_str  
+            if func is None:
+                return
+            if func == '': 
+                continue
+            self.config.write('Found function definition: "' + str(func) + '"' )
 
     def write_out(self, folder=None):
         if folder is None:

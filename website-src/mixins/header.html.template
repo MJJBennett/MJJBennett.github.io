@@ -1,1 +1,3 @@
-${DEFINE name=Default Header)}
+${DEFINE name=Default Header}
+This is a default header!
+${GET name=PAGE_NAME}
