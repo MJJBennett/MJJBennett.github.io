@@ -346,6 +346,14 @@ def FSM_UnitTest():
 
     return fails
 
+class Function():
+    def __init__(self, fstring):
+        self.fstring = fstring
+        self.type = self.type_from_fstr(fstring)
+
+    def type_from_fstr(self, fstring):
+        return 0
+
 class FileMetadata(FileObject):
     def __init__(self, parent, config):
         super().__init__(parent.infile, parent.outfile, parent.name)
@@ -359,8 +367,6 @@ class FileMetadata(FileObject):
 
         self.parse()
         self.config.unshift_write()
-
-    def 
 
     def parse(self):
         # This is just to get metadata about the file.
@@ -378,6 +384,12 @@ class FileMetadata(FileObject):
             if func == '': 
                 continue
             self.config.write('Found function definition: "' + str(func) + '"' )
+
+            # We've found a function definition.
+            # Even variables are functions - they're calls to get a value.
+            fdef = Function(func)
+
+            # Information we need: Includes
 
     def write_out(self, folder=None):
         if folder is None:
