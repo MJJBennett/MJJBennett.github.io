@@ -52,6 +52,10 @@ class Configuration:
         This function takes a filename and returns it with the 
         extension removed. e.g. blog/index.html.template 
         should be placed into working_directory/blog/index.html
+
+        Note: Combined extensions (i.e. template.remove) are
+        considered 'undefined behaviour' due to this 'algorithm'
+        being literally two lines.
         """
 
         for remove_ext in self.remove_exts:
