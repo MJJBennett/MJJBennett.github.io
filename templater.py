@@ -4,6 +4,24 @@
 New script for templating files.
 
 Mechanism: Collect file objects, scrape for information, generate results, write out new files.
+
+Planning for syntax in files:
+
+Define an attribute for a file:
+${ATTRIBUTE name=Default Header}
+${ATTRIBUTE nav_id=1}
+
+Additional syntax allowed: | or , to delimit multiple arguments.
+Function must not have any spaces within it. Function should be able to decide what it does.
+${ATTRIBUTE name=Default Header, nav_id=1} - Define multiple attributes
+
+This allows us to select files or perform operations on them based on attributes:
+${INCLUDE name=Default Header} - Import a file
+${INCLUDE name=#REGEX(.*Header.*), type=Default} - This would be great, but I'm not sure if it's 
+                                                   realistic without a better framework (i.e. not 
+                                                   a <1000loc single-file python script)
+
+${}
 """
 
 # In order to keep this a single file, some helper functions 
