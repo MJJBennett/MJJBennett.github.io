@@ -22,6 +22,14 @@ ${INCLUDE name=#REGEX(.*Header.*), type=Default} - This would be great, but I'm 
                                                    a <1000loc single-file python script)
 
 ${}
+
+Thinking more about this. I might be approaching this in the wrong way.
+
+What if, instead of inserting the templates into the page, the page was inserted into the template?
+That seems more correct in terms of what a 'template' actually is.
+So instead of having content in a page with stuff like $HEADER, $FOOTER, it would be rather a pure-content 
+page that defines certain things (i.e. $CONTENT START, $CONTENT END, $AUTHOR NOTE, in that vein)
+
 """
 
 # In order to keep this a single file, some helper functions 
