@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found</title>
+    <link rel="icon" type="image/png" href="resources/images/favicon-32.png">
+</head>
+<style>
+/** Color Palette
+ * Using this tool: https://coolors.co/browser/best/1 
+ * Direct link: https://coolors.co/b39c4d-f1faee-a8dadc-768948-1d3557
+ * Colors:
+ * Light - F1FAEE
+ * Off-light - A8DADC
+ * Color (green) - 768948
+ * Color (off-green) - B39C4D
+ * Dark - 1D3557
+ */
+
+/* Define variables */
+:root {
+
+    /*** Padding / Website Alignment ***/
+    --left-padding: 20%;
+    /*--left-padding:calc();*/
+    --right-padding: 20%;
+    /*--right-padding:calc();*/
+
+    --header-height: 5.5em;
+    --footer-height: 4em;
+
+    /*** Choose one of the following to show or hide announcements ***/
+    /* Show: */
+    --announcement-box-height: 2em;
+    --display-announcements: block; 
+    /* Hide: */
+    /*--announcement-box-height: 0em;
+    --display-announcements: none;*/
+
+    /*** Colours / Website Palette ***/
+
+    /**
+     * Trying out different colour palettes
+     * Uncomment a selection to test it.
+     */
+
+    /**
+     * #1 - Decent background, header is a bit washed out on some monitors
+    --text-color: #2B2D42;
+    --text-clicked-color: rgb(31, 32, 44);
+    --header-background-color: #EF233C;
+    --header-foreground-color: #EF233C;
+    --website-background-color: #EDF2F4;
+    --website-foreground-color: #8D99AE;
+    --footer-background-color: #1D3557;
+    --footer-foreground-color: #FFFFFF;
+     */
+    
+    /**
+     * #2 - Black and white scheme
+     --text-color: #000000;
+     --text-clicked-color: #000000;
+     --header-background-color: #FFFFFF;
+     --header-foreground-color: #FFFFFF;
+     --website-background-color: #000000;
+     --website-foreground-color: #FFFFFF;
+     --footer-background-color: #000000;
+     --footer-foreground-color: #FFFFFF;
+     */
+
+    /**
+     * #3 - Inverted #2
+     --text-color: #FFFFFF;
+     --text-clicked-color: #FFFFFF;
+     --header-background-color: #000000;
+     --header-foreground-color: #000000;
+     --website-background-color: #FFFFFF;
+     --website-foreground-color: #000000;
+     --footer-background-color: #000000;
+     --footer-foreground-color: #000000;
+     */
+
+    /**
+     * #4 - Grayscale with a bit of blue
+     * https://coolors.co/dcdcdd-c5c3c6-46494c-4c5c68-1985a1
+     * Left out #4C5C68, #46494C #DCDCDD 
+     */
+    /*--text-color: #020402;
+    --text-clicked-color: #020402;
+    --header-background-color: #1985A1;
+    --header-foreground-color: #1985A1;
+    --website-background-color: #C5C3C6;
+    --website-foreground-color: #EDF2F4;
+    --website-text-color: #333;
+    --footer-background-color: rgb(83, 80, 87);
+    --footer-foreground-color: #000000;*/
+
+    --text-color: #020402;
+    --text-clicked-color: #020402;
+    --header-background-color: #19b7f6;
+    --header-foreground-color: var(--header-background-color);
+    --website-background-color: #EDF2F4;
+    --website-foreground-color: white;
+    --website-text-color: #333;
+    --footer-background-color: rgb(83, 80, 87);
+    --footer-foreground-color: #000000;
+    
+    /*--header-foreground-color: #D90429;*/
+}
+
+/**
+ * Order CSS based on outer-inner, top-bottom. 
+ */
+
+/* HTML CSS */
+
+html,
+body {
+    /* html-reset stuff. might need more, google 'html-reset' */
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+
+/* Body CSS */
+
+body {
+    /* edit :root to change */
+    background-color: var(--website-background-color);
+}
+
+
+/* Load header CSS first - #floating-header */
+
+#floating-header {
+    /*Top-right-bottom-left*/
+    margin: 0 0 calc(var(--announcement-box-height) + 2em) 0;
+    height: var(--header-height);
+    padding-left: var(--left-padding);
+    padding-right: var(--right-padding);
+
+    background-color: var(--header-foreground-color);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#floating-header>.page-title {
+    font-size: 250%;
+
+    background-color: var(--header-background-color);
+    color: var(--text-color);
+
+    padding: 0;
+    margin: 0;
+}
+
+#floating-header>.nav {
+    font-family: Arial, Helvetica, sans-serif;
+
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    list-style: none;
+    margin: 0;
+    height: 2.1em;
+    margin-bottom: 0.5em;
+    align-items: flex-end;
+
+    padding: 0;
+}
+
+#floating-header>.nav>li {
+    padding-right: 3em;
+    font-size: 110%;
+}
+
+.nav a {
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.nav a:hover, .nav a:visited {
+    color: var(--text-clicked-color);
+}
+
+.triangle {
+    width: 0; 
+    height: 0; 
+    
+    position: absolute;
+    top: calc(var(--header-height) - 0.38em);
+
+    border-left: 0.75em solid transparent;
+    border-right: 0.75em solid transparent;
+
+    border-bottom: 0.4em solid var(--website-background-color);    
+}
+
+#announcement-box {
+    position: absolute;
+    top: calc(var(--header-height) + 0.75em);
+    left: var(--left-padding);
+    right: var(--right-padding);
+    height: calc(var(--announcement-box-height) - 5px);
+    display: var(--display-announcements);
+    padding-left: 1em;
+    padding-top: 5px;
+    overflow: hidden;
+    background-color: var(--website-foreground-color);
+    box-shadow: 0em 0em 0.5em 0.15em #000000;
+}
+
+/* Load main content CSS */
+
+.title {
+    font-family: Arial;
+    font-size: 2em;
+    padding: 0;
+    margin: 0;
+}
+
+div.article, footer {
+    background-color: var(--website-foreground-color);
+    color: var(--website-text-color, --text-color);
+
+/*
+    -moz-box-shadow: 1em 1em 1em 1em #000000;
+    -webkit-box-shadow: 1em 1em 1em 1em #000000;
+*/
+    /*Horizontal / Vertical offsets, blur radius, spread*/
+    box-shadow: 0em 0em 1em 0.15em #000000;
+
+    /*Standardizing distance from sides of the website*/
+
+    margin-left: var(--left-padding);
+    margin-right: var(--right-padding);
+    margin-bottom: 2.5em;
+    height: auto;
+}
+
+footer {
+    text-align: center;
+}
+
+div.article p {
+    font-size: 120%;
+}
+
+div.article .content, footer .footer-content {
+    margin: 0;
+    padding: 1em;
+}
+
+#container {
+    min-height: calc(100vh - var(--footer-height));
+    overflow: hidden;
+}
+
+footer {
+    height: var(--footer-height);
+    margin-left: var(--left-padding);
+    margin-right: var(--right-padding);
+    margin-bottom: 2.5em;
+    /*width: 100%;*/
+    position: relative;
+    overflow: hidden;
+}
+
+footer .footer-content p {
+    margin: 0;
+}
+
+/* Mobile */
+
+@media only screen and (max-width: 800px) {
+    :root {
+        --left-padding: 10%;
+        --right-padding: 10%;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    :root {
+        --left-padding: 0%;
+        --right-padding: 0%;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    :root {
+        --left-padding: 0%;
+        --right-padding: 0%;
+    }
+
+    #floating-header>.page-title {
+        font-size: 150%;
+    }
+}
+</style>
+<body>
+    <div id="container">
+        <!--Admittedly, using this to remove the triangle is pretty awful.-->
+        <!--Header inserted from ./resources/html/site-header.html-->
+<header id="floating-header">
+    <span class="page-title">
+        Forests and Trees
+    </span>
+
+    <ul class="nav">
+        <li><a href="https://gp.forricide.me/index.html">Home</a></li>
+        <li><a href="https://gp.forricide.me/projects.html">Projects</a></li>
+        <li><a href="https://gp.forricide.me/blog/index.html">Blog</a></li>
+    </ul>
+    
+    <!--Position here should be inserted from document this is being inserted into.-->
+    <div class="triangle" style="left: calc(var(--left-padding) + -300em)"></div>
+</header>
+<span id="announcement-box">
+    Important announcement: This website is a work in progress!
+</span>
+<!--End inserted header-->
+
+        <!--Begin article listings-->
+        
+        <div class="article"><div class="content">
+            <h1 class="title">Page not found (Error 404)</h1>
+            <p>We sincerely apologize for the inconvenience.</p>
+            <p style="font-size:100%;">If you believe this to be in error, feel free to <a href="https://github.com/MJJBennett/MJJBennett.github.io/issues">create a GitHub issue</a>!</p>
+        </div>
+        </div>
+        
+        <!--End article listings-->
+
+    </div>
+    <!--Footer inserted from ./resources/html/site-footer.html-->
+<footer id="floating-footer">
+<div class="footer-content"> <!--Necessary wrapper to prevent padding from causing problems-->
+    Website last updated: 2018-07-14 00:33PST <b>&middot;</b>
+    <a href="https://github.com/MJJBennett/MJJBennett.github.io/">Github</a>
+</div>
+</footer>
+<!--End inserted footer-->
+</body>
+</html>

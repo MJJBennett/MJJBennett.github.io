@@ -30,6 +30,10 @@ That seems more correct in terms of what a 'template' actually is.
 So instead of having content in a page with stuff like $HEADER, $FOOTER, it would be rather a pure-content 
 page that defines certain things (i.e. $CONTENT START, $CONTENT END, $AUTHOR NOTE, in that vein)
 
+Furthering this thought, it should be possible to write the pages in a superset of markdown, which then has 
+'layout' applied to it. I believe that this is much more similar to what Jekyll does, and it definitely
+feels more correct.
+
 """
 
 # In order to keep this a single file, some helper functions 
